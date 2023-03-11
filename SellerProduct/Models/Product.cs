@@ -9,6 +9,7 @@
         public int Status { get; set; }
         public string Supplier { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<BillDetails> Details { get;set; }
+        public virtual ICollection<BillDetails> BillDetails { get;set; }
+        public virtual ICollection<CartDetail> CartDetails { get; set; }
     }
 }
