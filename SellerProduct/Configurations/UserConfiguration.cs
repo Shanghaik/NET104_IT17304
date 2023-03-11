@@ -10,6 +10,9 @@ namespace SellerProduct.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Username).HasColumnType("varchar(256)");
             builder.Property(x => x.Password).HasColumnType("varchar(256)");
+            builder.HasOne(p => p.Role).WithMany(p => p.Users).
+                HasForeignKey(p=>p.RoleId);
+            builder.HasAlternateKey(p => p.Username); // Unique
         }
     }
 }

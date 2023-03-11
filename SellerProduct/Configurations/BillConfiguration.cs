@@ -12,6 +12,7 @@ namespace SellerProduct.Configurations
             // Thiết lập cho các thuộc tính
             builder.Property(p=>p.Status).HasColumnType("int").
                 IsRequired(); // int not null
+            builder.HasOne(p => p.User).WithMany(p => p.Bills).HasForeignKey(p=>p.UserId);
         }
     }
 }
