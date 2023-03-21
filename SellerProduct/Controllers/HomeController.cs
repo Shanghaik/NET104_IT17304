@@ -70,6 +70,34 @@ namespace SellerProduct.Controllers
             else return BadRequest();
         }
 
+        public IActionResult Details(Guid id)
+        {
+            var product = productServices.GetProductById(id);
+            return View(product); 
+        }
+        public IActionResult Delete(Guid id)
+        {
+            if (productServices.DeleteProduct(id))
+            {
+                return RedirectToAction("ShowAllProduct");
+            }
+            else return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult Edit(Guid id)
+        {
+            var product = productServices.GetProductById(id);
+            return View(product);
+        }
+        public IActionResult Edit(Product p)
+        {
+            if (productServices.UpdateProduct(p))
+            {
+                return RedirectToAction("ShowAllProduct");
+            }
+            else return BadRequest();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
