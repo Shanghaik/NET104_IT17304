@@ -18,6 +18,11 @@ builder.Services.AddTransient<IProductServices, ProductServices>();
  * có nhiều trạng thái, nhiều nhiều cầu http và mang tính linh động hơn.
  */
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+}); // Thêm cái này để sử dụng được Session với timeOut = 10 giây
+// Tất cả dịch vụ đăng kí phải trước cái dòng ở dưới OK?
 var app = builder.Build();// Thực hiện tất cả các services được cài đặt
 
 // Configure the HTTP request pipeline.
@@ -30,7 +35,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession(); // Add thêm cái này nữa để SD được Session
 app.UseRouting();
 
 app.UseAuthorization();

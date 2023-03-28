@@ -27,6 +27,11 @@ namespace SellerProduct.Controllers
         }
         public IActionResult Test()
         {
+            // Đọc dữ liệu ra từ Session
+            var sessionData = HttpContext.Session.GetString("mitom2trung");
+            if (sessionData == null)
+                ViewData["data"] = "Session không tồn tại";
+            else ViewData["data"] = sessionData;
             return View();
         }
 
@@ -98,6 +103,7 @@ namespace SellerProduct.Controllers
             else return BadRequest();
         }
 
+
         public IActionResult ViewBag_ViewData()
         {
             var products = productServices.GetAllProducts();
@@ -111,6 +117,26 @@ namespace SellerProduct.Controllers
             ViewData["Values"] = "Giá trị của Bảo là ông chị";
             // trong đó "Product" là key còn products là value
             return View();
+        }
+
+        public IActionResult TestSession()
+        {
+            string message = "Em đói lắm không nghĩ được đâu";
+            // Đưa dữ liệu vào phiên làm việc (Session)
+            HttpContext.Session.SetString("mitom2trung", message);
+            // Đọc dữ liệu ra từ Session
+            var sessionData = HttpContext.Session.GetString("mitom2trung");
+            ViewData["data"] = sessionData;
+            /*
+             * Timeout của session được tính như thế nào:
+             * Khi Session đã tồn tại, Bộ đếm thời gian sẽ được kích hoạt 
+             * ngay sau khi request cuối cùng được thực thi. Nếu sau khoảng
+             * thời gian idleTimeout mà không có request nào được thực thi
+             * thì dữ liệu đó sẽ mất. Nếu trước khi thời gian timeout kết
+             * thúc mà có 1 request bất kì được thực thi thì bộ đếm thời 
+             * gian sẽ được reset
+             */
+            return View();  
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
