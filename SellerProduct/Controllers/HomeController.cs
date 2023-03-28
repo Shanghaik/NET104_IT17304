@@ -98,6 +98,21 @@ namespace SellerProduct.Controllers
             else return BadRequest();
         }
 
+        public IActionResult ViewBag_ViewData()
+        {
+            var products = productServices.GetAllProducts();
+            // ViewBag chứa dữ liệu dạng dynamic, khi cần sử dụng
+            // ta không cần khởi tạo mà gán thẳng giá trị vào
+            ViewBag.Products = products;
+            ViewBag.Messages = "Bảo mất giá trông chán đời <3";
+            // ViewData chứa dữ liệu dạng Generic, dữ liệu này được
+            // lưu dưới dạng key-value
+            ViewData["Products"] = products;
+            ViewData["Values"] = "Giá trị của Bảo là ông chị";
+            // trong đó "Product" là key còn products là value
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
