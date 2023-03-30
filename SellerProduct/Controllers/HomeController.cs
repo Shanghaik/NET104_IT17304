@@ -144,13 +144,32 @@ namespace SellerProduct.Controllers
             // B1: Dựa vào ID lấy ra sản phẩm
             var product = productServices.GetProductById(id);
             // B2: Lấy danh sách sản phẩm ra từ Session
+            var products = SessionServices.GetObjFromSession(HttpContext.Session, "Cart");
+            if(products.Count == 0)
+            {
+                products.Add(product); // Thêm trực tiếp sp vào nếu List trống
+                SessionServices.SetObjToSession(HttpContext.Session, "Cart", products);
+            }
+            else
+            {
+                if(SessionServices.CheckObjInList(id, products))
+                { // Kiểm tra xem list lấy ra có chứa sản phẩm mình chọn hay chưa?
+                    return Content("Bình thường chúng ta sẽ thêm số lượng nhưng vì " +
+                        "lười nên không thêm mà chỉ đưa ra thông báo vô ích này");
+                }else
+                {
+                    products.Add(product); // Thêm trực tiếp sp vào nếu List chưa chứa sp đó
+                    SessionServices.SetObjToSession(HttpContext.Session, "Cart", products);
+                }
+            }
             // B3: Kiểm tra và thêm SP vào giỏ hàng
-            return RedirectToAction("ShowCart");
+            return RedirectToAction("ShowAllProduct");
         }
         public IActionResult ShowCart()
         {
             // Lấy dữ liệu từ Session để truyền vào View
-            return View();  
+            var products = SessionServices.GetObjFromSession(HttpContext.Session, "Cart");
+            return View(products);  // Truyền sang view
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
