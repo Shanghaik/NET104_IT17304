@@ -139,6 +139,20 @@ namespace SellerProduct.Controllers
             return View();  
         }
 
+        public IActionResult AddToCart(Guid id)
+        {
+            // B1: Dựa vào ID lấy ra sản phẩm
+            var product = productServices.GetProductById(id);
+            // B2: Lấy danh sách sản phẩm ra từ Session
+            // B3: Kiểm tra và thêm SP vào giỏ hàng
+            return RedirectToAction("ShowCart");
+        }
+        public IActionResult ShowCart()
+        {
+            // Lấy dữ liệu từ Session để truyền vào View
+            return View();  
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

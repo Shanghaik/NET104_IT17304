@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SellerProduct.styles.css" asp-append-version="true" />
 </head>
+@{
+    var s = ViewContext.HttpContext.Session.GetString("mitom2trung");
+}
+<h3>@s</h3>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
