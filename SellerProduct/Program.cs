@@ -17,11 +17,32 @@ builder.Services.AddTransient<IProductServices, ProductServices>();
  * services sẽ được tạo mới tại thời điểm có yêu cầu. Phù hợp cho các services
  * có nhiều trạng thái, nhiều nhiều cầu http và mang tính linh động hơn.
  */
+Dictionary<string, TimeSpan> sessionTimes = 
+    new Dictionary<string, TimeSpan>();
 
+// Set TimeSpan cho từng session
+sessionTimes.Add("Cart", new TimeSpan(0, 0, 10)); // 30 phút cho session1
+sessionTimes.Add("Test", new TimeSpan(0, 0, 10)); // 1 giờ cho session2
+sessionTimes.Add("mitom2trung", new TimeSpan(0, 0, 20)); // 45 phút cho session3
+
+// Đăng ký session vào dịch vụ
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
-}); // Thêm cái này để sử dụng được Session với timeOut = 10 giây
+    // Thiết lập thời gian timeout cho session tương ứng với từng key trong Dictionary
+    foreach (var key in sessionTimes.Keys)
+    {
+        TimeSpan duration;
+        if (sessionTimes.TryGetValue(key, out duration))
+        {
+            options.IdleTimeout = duration;
+        }
+    }
+});
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromSeconds(10);
+//}); // Thêm cái này để sử dụng được Session với timeOut = 10 giây
+ // Thêm cái này để sử dụng được Session với timeOut = 10 giây
 // Tất cả dịch vụ đăng kí phải trước cái dòng ở dưới OK?
 var app = builder.Build();// Thực hiện tất cả các services được cài đặt
 

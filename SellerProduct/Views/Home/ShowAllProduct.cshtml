@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "ShowAllProduct";
+    List<string> imageExtensions = new List<string>()
+    {
+        ".jpg", ".png", ".webp", ".gif", ".pdf", ".tiff", ".jpeg"
+    };
 }
 
 <h1>ShowAllProduct</h1>
@@ -37,35 +41,47 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AvailableQuantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Supplier)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AvailableQuantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier)
+                </td>
+                <td>
+                    @{
+                        var extension = System.IO.Path.GetExtension(item.Description);
+                    }
+                    @if (imageExtensions.Contains(extension))
+                    {
+                        <img src="~/images/@item.Description" height="100px">
+                    }
+                    else
+                    {
+                        <img src="~/images/default.png" height="100px">
+                    }
+
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

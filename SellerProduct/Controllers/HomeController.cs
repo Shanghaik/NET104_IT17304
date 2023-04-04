@@ -32,6 +32,10 @@ namespace SellerProduct.Controllers
             if (sessionData == null)
                 ViewData["data"] = "Session không tồn tại";
             else ViewData["data"] = sessionData;
+            var sessionData2 = HttpContext.Session.GetString("Test");
+            if (sessionData2 == null)
+                ViewData["data2"] = "Session không tồn tại";
+            else ViewData["data2"] = sessionData2;
             return View();
         }
 
@@ -74,7 +78,20 @@ namespace SellerProduct.Controllers
             }
             else return BadRequest();
         }
-
+        public IActionResult GetImage(string imagePath)
+        {
+            string defaultPath = @"C:\Users\Acer\Desktop\tiennh21.png";
+            byte[] imageBytes;
+            try
+            {
+                imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            }
+            catch (Exception)
+            {
+                imageBytes = System.IO.File.ReadAllBytes(defaultPath);
+            }  
+            return File(imageBytes, "image/jpeg");
+        }
         public IActionResult Details(Guid id)
         {
             var product = productServices.GetProductById(id);
@@ -124,9 +141,12 @@ namespace SellerProduct.Controllers
             string message = "Em đói lắm không nghĩ được đâu";
             // Đưa dữ liệu vào phiên làm việc (Session)
             HttpContext.Session.SetString("mitom2trung", message);
+            HttpContext.Session.SetString("Test", "Session tét");
             // Đọc dữ liệu ra từ Session
             var sessionData = HttpContext.Session.GetString("mitom2trung");
+            var sessionData2 = HttpContext.Session.GetString("Test");
             ViewData["data"] = sessionData;
+            ViewData["data2"] = sessionData2;
             /*
              * Timeout của session được tính như thế nào:
              * Khi Session đã tồn tại, Bộ đếm thời gian sẽ được kích hoạt 
