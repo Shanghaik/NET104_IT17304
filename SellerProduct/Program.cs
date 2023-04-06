@@ -58,7 +58,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession(); // Add thêm cái này nữa để SD được Session
 app.UseRouting();
-
+app.UseStatusCodePagesWithReExecute("/Home/Index"); 
+// Midddleware tự động redirect người dùng đến /Home/Index khi gặp bất kì lỗi nào HTTP status code
 app.UseAuthorization();
 
 app.MapControllerRoute(
