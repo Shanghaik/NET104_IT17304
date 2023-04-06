@@ -3,6 +3,7 @@ using SellerProduct.IServices;
 using SellerProduct.Models;
 using SellerProduct.Services;
 using System.Diagnostics;
+using System.Text;
 
 namespace SellerProduct.Controllers
 {
@@ -70,8 +71,23 @@ namespace SellerProduct.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Product p)
+        public IActionResult Create(Product p, [Bind]IFormFile imageFile)
         {
+            var x = imageFile;
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var path = Path.Combine(
+                    Directory.GetCurrentDirectory(), "wwwroot", "images",
+                    imageFile.FileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    imageFile.CopyToAsync(stream);
+                }
+
+                p.Description = $"{imageFile.FileName}";
+            }
+
             if (productServices.CreateProduct(p))
             {
                 return RedirectToAction("ShowAllProduct");
@@ -89,13 +105,13 @@ namespace SellerProduct.Controllers
             catch (Exception)
             {
                 imageBytes = System.IO.File.ReadAllBytes(defaultPath);
-            }  
+            }
             return File(imageBytes, "image/jpeg");
         }
         public IActionResult Details(Guid id)
         {
             var product = productServices.GetProductById(id);
-            return View(product); 
+            return View(product);
         }
         public IActionResult Delete(Guid id)
         {
@@ -156,7 +172,7 @@ namespace SellerProduct.Controllers
              * thúc mà có 1 request bất kì được thực thi thì bộ đếm thời 
              * gian sẽ được reset
              */
-            return View();  
+            return View();
         }
 
         public IActionResult AddToCart(Guid id)
@@ -165,18 +181,19 @@ namespace SellerProduct.Controllers
             var product = productServices.GetProductById(id);
             // B2: Lấy danh sách sản phẩm ra từ Session
             var products = SessionServices.GetObjFromSession(HttpContext.Session, "Cart");
-            if(products.Count == 0)
+            if (products.Count == 0)
             {
                 products.Add(product); // Thêm trực tiếp sp vào nếu List trống
                 SessionServices.SetObjToSession(HttpContext.Session, "Cart", products);
             }
             else
             {
-                if(SessionServices.CheckObjInList(id, products))
+                if (SessionServices.CheckObjInList(id, products))
                 { // Kiểm tra xem list lấy ra có chứa sản phẩm mình chọn hay chưa?
                     return Content("Bình thường chúng ta sẽ thêm số lượng nhưng vì " +
                         "lười nên không thêm mà chỉ đưa ra thông báo vô ích này");
-                }else
+                }
+                else
                 {
                     products.Add(product); // Thêm trực tiếp sp vào nếu List chưa chứa sp đó
                     SessionServices.SetObjToSession(HttpContext.Session, "Cart", products);
